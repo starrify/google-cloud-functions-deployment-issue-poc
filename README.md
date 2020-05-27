@@ -173,3 +173,20 @@ bar1
 
 and light of stars was in her hair
 ```
+
+## Test 5
+
+Yet another test has been made to understand whether the postinstall hook may be triggered at all. The change is as below:
+
+```
+$ git diff --unified=0
+diff --git a/package.json b/package.json
+index bcdd0c2..1da3ac1 100644
+--- a/package.json
++++ b/package.json
+@@ -5 +5 @@
+-    "postinstall": "echo bar3 > foo3 && echo bar4 > foo4 && echo baz >> foo1"
++    "postinstall": "wget <some HTTP endpoint that I could observe the access log>"
+```
+
+After another successful deployment on Google Cloud, there was no visit observed for that endpoint.
