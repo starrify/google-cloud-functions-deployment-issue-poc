@@ -1,0 +1,10 @@
+{
+  "name": "test",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "echo bar2 > foo2 && echo bar3 > foo3"
+  },
+  "files": [
+    "foo1"
+  ]
+}
