@@ -63,7 +63,7 @@ foo3:bar3
 
 ## Test 2
 
-The a minor change has been made to the files that are generated during the postinstall hook:
+The a minor change has been made to the files that are generated during the `postinstall` hook:
 
 ```
 $ git diff --unified=0
@@ -176,7 +176,7 @@ and light of stars was in her hair
 
 ## Test 5
 
-Yet another test has been made to understand whether the postinstall hook may be triggered at all. The change is as below:
+Yet another test has been made to understand whether the `postinstall` hook may be triggered at all. The change is as below:
 
 ```
 $ git diff --unified=0
@@ -190,3 +190,15 @@ index bcdd0c2..1da3ac1 100644
 ```
 
 After another successful deployment on Google Cloud, there was no visit observed for that endpoint.
+
+
+## Analysis & proposals
+
+Unfortunately there is yet not sufficient information I could find that explains why Google Cloud has such behavior.
+
+If this is indeed not a bug, it would be strongly suggested that Google Cloud publishes further explainations and guides, so that people may understand the reason behind, and also how to do it right.
+
+Assuming this has got something to do with cached layers during deployment, a guess would be that forced refreshes may do. It is true that there are currently two types workarounds observed which may mitigate the issue, where the `postinstall` hook may be invoked properly:
+
+- When it is for a newly created function, like in test 1 above.
+- When there are signifinicant changes between the two deployments. In one of the projects that I'm currently working on, it is observed that if at version X of the project there are something totally unrelated (like some hello-world code) deployed as version X+1, and the project itself is then re-deployed as version X+2, then the `postinstall` hook at version X+2 would be always invoked.
