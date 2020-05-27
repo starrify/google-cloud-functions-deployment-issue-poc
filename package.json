@@ -2,7 +2,7 @@
   "name": "test",
   "main": "index.js",
   "scripts": {
-    "postinstall": "echo bar3 > foo3 && echo bar4 > foo4"
+    "postinstall": "echo bar3 > foo3 && echo bar4 > foo4 && echo baz >> foo1"
   },
   "files": [
     "foo1"

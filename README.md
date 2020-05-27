@@ -42,6 +42,7 @@ versionId: '1'
 ```
 
 Below is the sample result which looks all good.
+
 ```
 $ curl $TEST_FUNCTION_URL
 total 0
@@ -76,6 +77,7 @@ index 06b7216..d2cb151 100644
 ```
 
 Below is the sample result after a redeployment:
+
 ```
 $ gcloud functions deploy foo-test --runtime nodejs10 --trigger-http --entry-point render --allow-unauthenticated | tee tmp.log | grep -P "status|version"
 Deploying function (may take a while - up to 2 minutes)...done.
@@ -95,3 +97,41 @@ bar1
 ```
 
 This is rather unexpected as we may assume to see files `foo3` and `foo4` here.
+
+
+## Test 3
+
+A further change has been introduced as below:
+
+```
+$ git diff --unified=0
+diff --git a/package.json b/package.json
+index d2cb151..bcdd0c2 100644
+--- a/package.json
++++ b/package.json
+@@ -5 +5 @@
+-    "postinstall": "echo bar3 > foo3 && echo bar4 > foo4"
++    "postinstall": "echo bar3 > foo3 && echo bar4 > foo4 && echo baz >> foo1"
+```
+
+Below is the sample result:
+
+```
+$ gcloud functions deploy foo-test --runtime nodejs10 --trigger-http --entry-point render --allow-unauthenticated | tee tmp.log | grep -P "status|version"
+Deploying function (may take a while - up to 2 minutes)...done.
+status: ACTIVE
+versionId: '3'
+$ curl $TEST_FUNCTION_URL
+total 3.0K
+drwxr-xr-x 2 www-data www-data    0 Jan  1  1980 .
+drwxr-xr-x 2 root     root        0 May 27 03:13 ..
+-rwxr-xr-x 1 www-data www-data 3.2K Jan  1  1980 README.md
+-rwxr-xr-x 1 www-data www-data    5 Jan  1  1980 foo1
+-rwxr-xr-x 1 www-data www-data  235 Jan  1  1980 index.js
+drwxr-xr-x 2 www-data www-data    0 Jan  1  1980 node_modules
+-rw-r--r-- 1 www-data www-data   45 Jan  1  1980 package-lock.json
+-rwxr-xr-x 1 www-data www-data  170 Jan  1  1980 package.json
+bar1
+```
+
+This seems to be as wrong as in the previous test, for we do not see the `foo3` and `foo4` files, nor the expected `baz` line from file `foo1`.
