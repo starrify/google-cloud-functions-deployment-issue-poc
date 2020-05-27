@@ -135,3 +135,41 @@ bar1
 ```
 
 This seems to be as wrong as in the previous test, for we do not see the `foo3` and `foo4` files, nor the expected `baz` line from file `foo1`.
+
+
+## Test 4
+
+Yet another change has been introduced -- this time to the response, just to see whether Google Cloud Functions still responds to our changes at all (or whether it indeed has been using the same initial function package).
+
+```
+$ git diff --unified=0
+diff --git a/index.js b/index.js
+index 2de1762..ba42c97 100644
+--- a/index.js
++++ b/index.js
+@@ -5 +5 @@ module.exports.render = async (req, res) => {
+-  res.status(200).send(stdout);
++  res.status(200).send(stdout + '\nand light of stars was in her hair');
+```
+
+Yes, it still responds to changes in the code:
+
+```
+$ gcloud functions deploy foo-test --runtime nodejs10 --trigger-http --entry-point render --allow-unauthenticated | tee tmp.log | grep -P "status|version"
+Deploying function (may take a while - up to 2 minutes)...done.
+status: ACTIVE
+versionId: '4'
+$ curl $TEST_FUNCTION_URL
+total 4.0K
+drwxr-xr-x 2 www-data www-data    0 Jan  1  1980 .
+drwxr-xr-x 2 root     root        0 May 27 03:23 ..
+-rwxr-xr-x 1 www-data www-data 4.5K Jan  1  1980 README.md
+-rwxr-xr-x 1 www-data www-data    5 Jan  1  1980 foo1
+-rwxr-xr-x 1 www-data www-data  278 Jan  1  1980 index.js
+drwxr-xr-x 2 www-data www-data    0 Jan  1  1980 node_modules
+-rw-r--r-- 1 www-data www-data   45 Jan  1  1980 package-lock.json
+-rwxr-xr-x 1 www-data www-data  170 Jan  1  1980 package.json
+bar1
+
+and light of stars was in her hair
+```
